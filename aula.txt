@@ -308,3 +308,8 @@ Interpolação no SCSS é feita com #, exemplo:
 
 Abrir terminal: crtl+shift+"
 Trocar o terminal: crtl+shift+p > select default profile > cmd = usado para trocar a localidade o terminal caso não esteja no cmd ou em algum outro que vá usar.
+alt+shift+f para inventar o código
+Tags<> em maiúsculo são do próprio react e é necessário importar para reconhece-lás
+Para evitar que um váriavel vire HTMl, é necessário colocaar ela entre tags<>
+o element vem acomphado de chaves{}, exemplo: element={var}
+o to= é a raíz, o início de tudo, e a raíz é odentificada como"/"
