@@ -2,18 +2,26 @@ import {Link} from 'react-router'
 
 function Home(){
     return(
-        <>
-            <nav class="py-2 px-4 flex itens-center shadow-lg fixed w-full bg-secondary top-0">
-                <a href="#about" class="py-2 px-2 hover:bg-primary">Sobre</a>
-                <a href="#prices" class="py-2 px-2 hover:bg-primary">Preços</a>
-                <a href="#features" class="py-2 px-2 hover:bg-primary">Benefícios</a>
-                <Link class="py-2 px-4 bg-primary text-white rounded-full ml-auto mr-5 shadow hover:shadow-inner" to="/auth">Acessar</Link>
+        <div className="
+    inset-0
+    z-50
+    flex
+    items-center
+    justify-center
+    bg-black/70
+    backdrop-blur-sm
+    px-4">
+            <nav className="py-2 px-4 flex itens-center fixed top-0 z-50 w-full bg-[#1c1d24]/95 backdrop-blur-md shadow-lg">
+                <a href="#about" className="py-2 px-2 mr-2 bg-purple-700 text-white hover:bg-secondary rounded-full">Sobre</a>
+                <a href="#prices" className="py-2 px-2 mr-2 bg-purple-700 text-white hover:bg-secondary rounded-full">Preços</a>
+                <a href="#features" className="py-2 px-2 mr-2 bg-purple-700 text-white hover:bg-secondary rounded-full">Benefícios</a>
+                <Link className="py-2 px-4 bg-purple-700 text-white rounded-full ml-auto mr-5 shadow hover:bg-secondary" to="/auth">Acessar</Link>
             </nav>
             <div>
                 <div id="about">
-                    <div class="max-w-lg mx-auto py-4">
-                        <h1 class="text-center">Sobre o projeto</h1>
-                        <div class="flex gap-8">
+                    <div className="max-w-lg mx-auto py-4 mt-6">
+                        <h1 className="text-center">Sobre o projeto</h1>
+                        <div className="flex gap-8">
                             <div>
                                 <h3>Um pouco mais sobre o Fale+</h3>
                                 <p>
@@ -32,8 +40,8 @@ function Home(){
                     </div>
                 </div>
                 <div id="prices">
-                    <div class="max-w-lg mx-auto py-4">
-                        <h1 class="text-center">Preços</h1>
+                    <div className="max-w-lg mx-auto py-4">
+                        <h1 className="text-center">Preços</h1>
                         <p>
                             Sobre a questão dos preços, ainda não esta decidido se terá algum custo para o uso do app, inicialmente estavámos pensando sobre um plano mensal de valor entre <b>150 a 300 reais.</b>
                             Mas como também sabemos que pessoas de baixa renda possam querer usar o aplicativo, ficaria meio que inacessível esses preços, então pensando nisso, seria interessante uma comprovação de renda para preços "promocionais" para as pessoas que se enquadram.
@@ -41,8 +49,8 @@ function Home(){
                     </div>
                 </div>
                 <div id="features">
-                    <div class="max-w-lg max-w-lg mx-auto py-4">
-                        <h1 class="text-center">Benefícios</h1>
+                    <div className="max-w-lg max-w-lg mx-auto py-4">
+                        <h1 className="text-center">Benefícios</h1>
                         <p>
                             Sobre os benefícios, imaginamos que com o uso do aplicativo, tanto pessoas introvertidas e tímidas, quanto pessoas com dificuldade mesmo de falar em público seriam desenvolvidas de forma natural a apriomar suas habilidades de fala e socialização.
                             Hoje em dia, está cada vez mais comum pessoas com a mesma dificuldade, e nossa proposta é ajudar essas pessoas a evoluirem e se sentirem seguras de falar em uma reunião para seu trabalho, ou em uma apresentação na escola ou faculdade.
@@ -52,13 +60,13 @@ function Home(){
                 </div>
             </div>
             <footer>
-                <div class="max-w-lg max-w-lg mx-auto py-4 text-center">
+                <div>
                     <p>
                         Feito por Kauã Matheus de Souza
                     </p>
                 </div>
             </footer>
-        </>
+        </div>
     );
 }
 export default Home;

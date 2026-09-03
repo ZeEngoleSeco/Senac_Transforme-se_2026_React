@@ -8,17 +8,20 @@ function Auth() {
 
     return (
 
-        <div className="min-h-screen bg-[#15161c] text-white">
+        <div className="min-h-screen bg-black/70 text-white">
             <nav className="fixed z-50 w-full bg-[#1c1d24]/95 backdrop-blur-md shadow-lg">
                 <div className="mx-auto px-6 py-4 flex">
-                    <Link to="/" className="py-2 px-4 bg-primary text-white rounded-full shadow hover:shadow-inner">
+                    <Link to="/" className="py-2 px-4 bg-purple-700 text-white rounded-full shadow hover:bg-secondary">
                         Voltar
                     </Link>
                 </div>
             </nav>
+        
             <main className="min-h-screen flex items-center justify-center px-4 pt-20">
+
                 
-            <div className="w-full max-w-md">
+            <div className=" relative w-full max-w-md">
+                <div className="absolute inset-0 bg-purple-700/20 blur-3xl rounded-full"></div>
                     <div className="text-center mb-8">
                         <h1 className="text-4xl font-bold">
                             Login
@@ -27,6 +30,7 @@ function Auth() {
                             Entre na sua conta para continuar
                         </p>
                     </div>
+                    
                     <form id="form_login" className="w-full p-8 bg-[#080808] border border-purple-900/40 rounded-2xl shadow-2xl">
                         <div className="mb-6">
                             <label htmlFor="i_emaillogin" className="block mb-2 text-sm font-medium text-gray-200">
@@ -59,13 +63,14 @@ function Auth() {
                             />
                             {senha}
                         </div>
-                        <button
+                        <Link
                             id="button_login"
                             type="submit"
                             className="w-full py-3 rounded-xl bg-purple-700 text-white font-semibold shadow-lg transition-all duration-300 hover:bg-purple-600 hover:shadow-purple-900/40 hover:scale-[1.02] active:scale-[0.98]"
+                            to="/painel"
                         >
                             Login
-                        </button>
+                        </Link>
                     </form>
                 </div>
             </main>
