@@ -1,11 +1,28 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
 
 function Painel() {
 
     const [modal, setModal] = useState(false); //bollean de verdadeiro ou falso
     const [users, setUsers] = useState([]); //vetor
-    const [user, setUser] = useState({}); //objeto
+    const [user, setUser] = useState({});//objeto
+    const [logged, setLogged] = useState({});
+
+    useEffect(
+        () => {
+            const logged = JSON.parse(localStorage.getItem('logged'));
+            setLogged(logged);
+        },
+        []
+    );
+
+    useEffect(
+        () => {
+            const usersTemp = JSON.parse(localStorage.getItem('users'));
+            if(usersTemp) setUsers(usersTemp)
+        },
+        []
+    )
 
     function handleRegister() {
         //users.push(user); usuário empurrado nos usuários
@@ -16,7 +33,14 @@ function Painel() {
         setModal(false);
     }
 
+    function updateUser(pUser) {
+        setModal(true);
+        setUser(pUser);
+    }
+
     return (
+
+        
 
         <div className="
         fixed
@@ -61,6 +85,10 @@ function Painel() {
                 </Link>
 
             </nav>
+
+            <h3>
+                Bem Vindo, {logged?.nome}
+            </h3>
 
             {modal && (
                 <div className="
@@ -154,6 +182,7 @@ function Painel() {
                                 </label>
 
                                 <input
+                                    value={user.nome}
                                     onChange={(e) => setUser({ ...user, nome: e.target.value })}
                                     type="text"
                                     placeholder="Digite seu nome completo"
@@ -191,6 +220,7 @@ function Painel() {
                                 </label>
 
                                 <input
+                                    value={user.email}
                                     onChange={(e) => setUser({ ...user, email: e.target.value })}
                                     type="email"
                                     placeholder="Digite seu melhor email"
@@ -265,6 +295,7 @@ function Painel() {
                                 </label>
 
                                 <input
+                                    value={user.nascimento}
                                     onChange={(e) => setUser({ ...user, nascimento: e.target.value })}
                                     type="date"
                                     className="
@@ -325,10 +356,71 @@ function Painel() {
                     <th className="text-white">Ações</th>
                 </thead>
                 <tbody className="font-secondary">
-
+                    {users.map( u => (
+                            <tr>
+                                <td>{u.nome}</td>
+                                <td>{u.email}</td>
+                                <td>
+                                    <a className="
+                                        cursor-pointer
+                                        rounded-full
+                                        hover:text-white
+                                        hover:bg-red-600
+                                        transition-all
+                                        duration-300
+                                        cursor-pointer
+                                        border-red-900
+                                        border
+                                        px-4
+                                        shadow
+                                    "
+                                    >
+                                        X
+                                    </a>
+                                    <a className="
+                                        cursor-pointer
+                                        rounded-full
+                                        hover:text-white
+                                        hover:bg-green-600
+                                        transition-all
+                                        duration-300
+                                        cursor-pointer
+                                        border
+                                        border-green-900
+                                        px-4
+                                        shadow
+                                        mx-4
+                                        "
+                                        onClick={()=> updateUser(u)}
+                                    >
+                                        V
+                                    </a>
+                                </td>
+                            </tr>
+                    ))}
                 </tbody>
             </table>
-            <a onClick={() => setModal(true)} class="rounded-full text-white px-4 py-3 fixed bottom-0 right-0 border border-purple-900 hover:text-white hover:bg-purple-700 transition-all duration-300 shadow cursor-pointer"> ✔ </a>
+            <a 
+                onClick={() => setModal(true)} 
+                class="
+                    rounded-full 
+                    text-white 
+                    px-4 
+                    py-3 
+                    fixed 
+                    bottom-0 
+                    right-0 
+                    border 
+                    border-purple-900 
+                    hover:text-white 
+                    hover:bg-purple-700 
+                    transition-all 
+                    duration-300 
+                    shadow 
+                    cursor-pointer
+                "> 
+                    ✔ 
+                </a>
         </div>
     )
 }

@@ -23,7 +23,7 @@ function Auth() {
 
         if(user.senha == senha){
             console.log("Usuário logado")
-            localStorage.setItem("users", JSON.stringify(user))
+            localStorage.setItem("logged", JSON.stringify(user))
             nav("/painel")
         }else{
             console.log("Senha inválida")
