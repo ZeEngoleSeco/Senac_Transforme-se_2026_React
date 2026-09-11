@@ -313,3 +313,4 @@ Tags<> em maiúsculo são do próprio react e é necessário importar para recon
 Para evitar que um váriavel vire HTMl, é necessário colocaar ela entre tags<>
 o element vem acomphado de chaves{}, exemplo: element={var}
 o to= é a raíz, o início de tudo, e a raíz é odentificada como"/"
+? é umfa forma de fazer IF e : é o else

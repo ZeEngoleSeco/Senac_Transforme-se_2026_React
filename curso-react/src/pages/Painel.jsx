@@ -7,6 +7,8 @@ function Painel() {
     const [users, setUsers] = useState([]); //vetor
     const [user, setUser] = useState({});//objeto
     const [logged, setLogged] = useState({});
+    const [isEdit, setIsEdit] =  useState(false);
+    const [index, setIndex] = useState(-1);
 
     useEffect(
         () => {
@@ -24,34 +26,49 @@ function Painel() {
         []
     )
 
-    function handleRegister() {
+    function deletUser(index){
+        const newUsers = users.filter((u,i) => {
+            return i != index
+        })
+        setUsers(newUsers);
+        localStorage.setItem('users', JSON.stringify(newUsers));
+    }
+
+    function handleRegister(){
         //users.push(user); usuário empurrado nos usuários
-        const newUsers = [...users, user];
+        let newUsers = []
+        if(index != -1){
+            newUsers = [...users]
+            newUsers[index] = user;
+        }else{
+            newUsers = [...users, user];
+        }
         setUsers(newUsers);
         localStorage.setItem('users', JSON.stringify(newUsers));
         setUser({});
         setModal(false);
+        setIndex(-1);
+        setIsEdit(false);
     }
 
-    function updateUser(pUser) {
+    function updateUser(i) {
         setModal(true);
-        setUser(pUser);
+        setUser(users[i]);
+        setIndex(i);
     }
 
     return (
 
-        
-
         <div className="
-        fixed
-        inset-0
-        z-50
-        flex
-        items-center
-        justify-center
-        bg-black/70
-        backdrop-blur-sm
-        px-4
+                fixed
+                inset-0
+                z-50
+                flex
+                items-center
+                justify-center
+                bg-black/70
+                backdrop-blur-sm
+                px-4
         ">
             <nav className="
             py-2 
@@ -92,91 +109,97 @@ function Painel() {
 
             {modal && (
                 <div className="
-                relative 
-                w-full 
-                max-w-md
+                        relative 
+                        w-full 
+                        max-w-md
                 ">
 
                     <div className="
-                    absolute
-                    inset-0
-                    bg-purple-700/30
-                    blur-3xl
-                    rounded-full
+                            absolute
+                            inset-0
+                            bg-purple-700/30
+                            blur-3xl
+                            rounded-full
                     "></div>
 
 
                     <div className="
-                    relative
-                    w-full
-                    p-8
-                    bg-[#080808]
-                    border
-                    border-purple-900/40
-                    rounded-2xl
-                    shadow-2xl
-                    flex
-                    flex-col
-        ">
+                            relative
+                            w-full
+                            p-8
+                            bg-[#080808]
+                            border
+                            border-purple-900/40
+                            rounded-2xl
+                            shadow-2xl
+                            flex
+                            flex-col
+                    ">
 
-                        <a onClick={() => setModal(false)}
-                        className="
-                        absolute
-                        top-4
-                        right-4
-                        w-8
-                        h-8
-                        flex
-                        items-center
-                        justify-center
-                        rounded-full
-                        text-gray-400
-                        hover:text-white
-                        hover:bg-red-600
-                        transition-all
-                        duration-300
-                        cursor-pointer
+                        <a onClick={() => {
+                            setModal(false)
+                            setIsEdit(false)
+                            setUser({})
+                            setIndex(-1)
+
+                        }}
+                            className="
+                                absolute
+                                top-4
+                                right-4
+                                w-8
+                                h-8
+                                flex
+                                items-center
+                                justify-center
+                                rounded-full
+                                text-gray-400
+                                hover:text-white
+                                hover:bg-red-600
+                                transition-all
+                                duration-300
+                                cursor-pointer
                         ">
                             X
                         </a>
 
 
                         <h2 className="
-                        text-2xl
-                        font-bold
-                        text-center
-                        text-white
-                        mb-2
+                                text-2xl
+                                font-bold
+                                text-center
+                                text-white
+                                mb-2
                         ">
                             Cadastre um novo usuário
                         </h2>
 
                         <p className="
-                        text-center
-                        text-gray-400
-                        text-sm
-                        mb-6
+                                text-center
+                                text-gray-400
+                                text-sm
+                                mb-6
                         ">
                             Preencha seus dados para criar sua conta
                         </p>
 
-                        {JSON.stringify(user, null, 4)}
-                        <form
-                        className="
-                        flex
-                        flex-col
-                        gap-5
+                        {isEdit?(
+                        <form 
+                            className="
+                            flex
+                            flex-col
+                            gap-5
                         ">
 
                             <div>
-                                <label
-                                htmlFor="nome"
-                                className="
-                                block
-                                mb-2
-                                text-sm
-                                font-medium
-                                text-gray-200
+                                <label 
+                                    htmlFor="nome"
+                                    className="
+                                        block
+                                        mb-2
+                                        text-sm
+                                        font-medium
+                                        text-gray-200
                                 ">
                                     Nome
                                 </label>
@@ -187,21 +210,21 @@ function Painel() {
                                     type="text"
                                     placeholder="Digite seu nome completo"
                                     className="
-                                    w-full
-                                    px-4
-                                    py-3
-                                    bg-[#17171c]
-                                    border
-                                    border-gray-700
-                                    rounded-xl
-                                    text-white
-                                    outline-none
-                                    placeholder:text-gray-500
-                                    transition
-                                    duration-300
-                                    focus:border-purple-600
-                                    focus:ring-2
-                                    focus:ring-purple-600/20
+                                        w-full
+                                        px-4
+                                        py-3
+                                        bg-[#17171c]
+                                        border
+                                        border-gray-700
+                                        rounded-xl
+                                        text-white
+                                        outline-none
+                                        placeholder:text-gray-500
+                                        transition
+                                        duration-300
+                                        focus:border-purple-600
+                                        focus:ring-2
+                                        focus:ring-purple-600/20
                                     "/>
                             </div>
 
@@ -210,11 +233,11 @@ function Painel() {
                                 <label
                                     htmlFor="email"
                                     className="
-                                    block
-                                    mb-2
-                                    text-sm
-                                    font-medium
-                                    text-gray-200
+                                        block
+                                        mb-2
+                                        text-sm
+                                        font-medium
+                                        text-gray-200
                                     ">
                                     Email
                                 </label>
@@ -225,21 +248,21 @@ function Painel() {
                                     type="email"
                                     placeholder="Digite seu melhor email"
                                     className="
-                                    w-full
-                                    px-4
-                                    py-3
-                                    bg-[#17171c]
-                                    border
-                                    border-gray-700
-                                    rounded-xl
-                                    text-white
-                                    outline-none
-                                    placeholder:text-gray-500
-                                    transition
-                                    duration-300
-                                    focus:border-purple-600
-                                    focus:ring-2
-                                    focus:ring-purple-600/20
+                                        w-full
+                                        px-4
+                                        py-3
+                                        bg-[#17171c]
+                                        border
+                                        border-gray-700
+                                        rounded-xl
+                                        text-white
+                                        outline-none
+                                        placeholder:text-gray-500
+                                        transition
+                                        duration-300
+                                        focus:border-purple-600
+                                        focus:ring-2
+                                        focus:ring-purple-600/20
                                     "/>
                             </div>
 
@@ -248,11 +271,11 @@ function Painel() {
                                 <label
                                     htmlFor="senha"
                                     className="
-                                    block
-                                    mb-2
-                                    text-sm
-                                    font-medium
-                                    text-gray-200
+                                        block
+                                        mb-2
+                                        text-sm
+                                        font-medium
+                                        text-gray-200
                                     ">
                                     Senha
                                 </label>
@@ -262,21 +285,21 @@ function Painel() {
                                     type="password"
                                     placeholder="Letra maiúscula e um número"
                                     className="
-                                    w-full
-                                    px-4
-                                    py-3
-                                    bg-[#17171c]
-                                    border
-                                    border-gray-700
-                                    rounded-xl
-                                    text-white
-                                    outline-none
-                                    placeholder:text-gray-500
-                                    transition
-                                    duration-300
-                                    focus:border-purple-600
-                                    focus:ring-2
-                                    focus:ring-purple-600/20
+                                        w-full
+                                        px-4
+                                        py-3
+                                        bg-[#17171c]
+                                        border
+                                        border-gray-700
+                                        rounded-xl
+                                        text-white
+                                        outline-none
+                                        placeholder:text-gray-500
+                                        transition
+                                        duration-300
+                                        focus:border-purple-600
+                                        focus:ring-2
+                                        focus:ring-purple-600/20
                                     "/>
                             </div>
 
@@ -285,11 +308,11 @@ function Painel() {
                                 <label
                                     htmlFor="nascimento"
                                     className="
-                                    block
-                                    mb-2        
-                                    text-sm
-                                    font-medium
-                                    text-gray-200
+                                        block
+                                        mb-2        
+                                        text-sm
+                                        font-medium
+                                        text-gray-200
                                     ">
                                     Data de nascimento
                                 </label>
@@ -299,20 +322,20 @@ function Painel() {
                                     onChange={(e) => setUser({ ...user, nascimento: e.target.value })}
                                     type="date"
                                     className="
-                                    w-full
-                                    px-4
-                                    py-3
-                                    bg-[#17171c]
-                                    border
-                                    border-gray-700
-                                    rounded-xl
-                                    text-white
-                                    outline-none
-                                    transition
-                                    duration-300
-                                    focus:border-purple-600
-                                    focus:ring-2
-                                    focus:ring-purple-600/20
+                                        w-full
+                                        px-4
+                                        py-3
+                                        bg-[#17171c]
+                                        border
+                                        border-gray-700
+                                        rounded-xl
+                                        text-white
+                                        outline-none
+                                        transition
+                                        duration-300
+                                        focus:border-purple-600
+                                        focus:ring-2
+                                        focus:ring-purple-600/20
                                     "/>
                             </div>
 
@@ -321,29 +344,76 @@ function Painel() {
                                 onClick={handleRegister}
                                 type="submit"
                                 className="
-                        w-full
-                        py-3
-                        mt-2
-                        rounded-xl
-                        bg-purple-700
-                        text-white
-                        font-semibold
-                        shadow-lg
-                        transition-all
-                        duration-300
-                        hover:bg-purple-600
-                        hover:shadow-purple-900/50
-                        hover:scale-[1.02]
-                        active:scale-[0.98]
-                    "
-                            >
+                                    w-full
+                                    py-3
+                                    mt-2
+                                    rounded-xl
+                                    bg-purple-700
+                                    text-white
+                                    font-semibold
+                                    shadow-lg
+                                    transition-all
+                                    duration-300
+                                    hover:bg-purple-600
+                                    hover:shadow-purple-900/50
+                                    hover:scale-[1.02]
+                                    active:scale-[0.98]
+                                ">
                                 Criar conta
                             </button>
 
-                        </form>
+                            {index != -1 && (
+                                <button
+                                onClick={() => setIsEdit(false)}
+                                className="
+                                    w-full
+                                    py-3
+                                    mt-2
+                                    rounded-xl
+                                    bg-red-700
+                                    text-white
+                                    font-semibold
+                                    shadow-lg
+                                    transition-all
+                                    duration-300
+                                    hover:bg-red-600
+                                    hover:shadow-red-900/50
+                                    hover:scale-[1.02]
+                                    active:scale-[0.98]
+                            ">
+                                Cancelar
+                            </button>
+                            )}
+
+                        </form>):(
+                            <>
+                                <p className="text-white"><b>Nome:</b> {user.nome}</p>
+                                <p className="text-white"><b>Email:</b> {user.email}</p>
+                                <p className="text-white"><b>Nascimento:</b> {user.nascimento}</p>
+                                <button 
+                                    onClick={() => setIsEdit(true)}
+                                    className="
+                                        w-full
+                                        py-3
+                                        mt-2
+                                        rounded-xl
+                                        bg-purple-700
+                                        text-white
+                                        font-semibold
+                                        shadow-lg
+                                        transition-all
+                                        duration-300
+                                        hover:bg-purple-600
+                                        hover:shadow-purple-900/50
+                                        hover:scale-[1.02]
+                                        active:scale-[0.98]
+                                ">
+                                    Editar
+                                </button>
+                            </>
+                        )}
 
                     </div>
-
                 </div>
             )}
 
@@ -356,42 +426,44 @@ function Painel() {
                     <th className="text-white">Ações</th>
                 </thead>
                 <tbody className="font-secondary">
-                    {users.map( u => (
+                    {users.map( (u,i) => (
                             <tr>
                                 <td>{u.nome}</td>
                                 <td>{u.email}</td>
                                 <td>
-                                    <a className="
-                                        cursor-pointer
-                                        rounded-full
-                                        hover:text-white
-                                        hover:bg-red-600
-                                        transition-all
-                                        duration-300
-                                        cursor-pointer
-                                        border-red-900
-                                        border
-                                        px-4
-                                        shadow
-                                    "
-                                    >
+                                    <a 
+                                        onClick={()=> deletUser(i)}
+                                        className="
+                                            cursor-pointer
+                                            rounded-full
+                                            hover:text-white
+                                            hover:bg-red-600
+                                            transition-all
+                                            duration-300
+                                            cursor-pointer
+                                            border-red-900
+                                            border
+                                            px-4
+                                            shadow
+                                    ">
                                         X
                                     </a>
-                                    <a className="
-                                        cursor-pointer
-                                        rounded-full
-                                        hover:text-white
-                                        hover:bg-green-600
-                                        transition-all
-                                        duration-300
-                                        cursor-pointer
-                                        border
-                                        border-green-900
-                                        px-4
-                                        shadow
-                                        mx-4
+                                    <a 
+                                        className="
+                                            cursor-pointer
+                                            rounded-full
+                                            hover:text-white
+                                            hover:bg-green-600
+                                            transition-all
+                                            duration-300
+                                            cursor-pointer
+                                            border
+                                            border-green-900
+                                            px-4
+                                            shadow
+                                            mx-4
                                         "
-                                        onClick={()=> updateUser(u)}
+                                        onClick={()=> updateUser(i)}
                                     >
                                         V
                                     </a>
@@ -401,7 +473,10 @@ function Painel() {
                 </tbody>
             </table>
             <a 
-                onClick={() => setModal(true)} 
+                onClick={() => {
+                    setModal(true)
+                    setIsEdit(true)
+                }}
                 class="
                     rounded-full 
                     text-white 
