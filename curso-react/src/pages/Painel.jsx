@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react'
-import { Link } from 'react-router'
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router';
+import {supabase} from '../../utils/supabase';
 
 function Painel() {
 
@@ -9,6 +10,8 @@ function Painel() {
     const [logged, setLogged] = useState({});
     const [isEdit, setIsEdit] =  useState(false);
     const [index, setIndex] = useState(-1);
+    const [msg, setMsg] = useState('')
+    const [spiner, useSpiner] = useState(false)
 
     useEffect(
         () => {
@@ -34,21 +37,20 @@ function Painel() {
         localStorage.setItem('users', JSON.stringify(newUsers));
     }
 
-    function handleRegister(){
+    async function handleRegister(){
         //users.push(user); usuário empurrado nos usuários
-        let newUsers = []
-        if(index != -1){
-            newUsers = [...users]
-            newUsers[index] = user;
-        }else{
-            newUsers = [...users, user];
+        setSpiner(true)
+        const {data: authData, error: authError} = await supabase.auth.signUp({
+            email: user.email,
+            password: user.senha
+        });
+
+        if(authError){
+            setMsg(authError)
+            setSpiner(false)
+            return;
         }
-        setUsers(newUsers);
-        localStorage.setItem('users', JSON.stringify(newUsers));
-        setUser({});
-        setModal(false);
-        setIndex(-1);
-        setIsEdit(false);
+        setSpiner(false)
     }
 
     function updateUser(i) {
@@ -340,9 +342,8 @@ function Painel() {
                             </div>
 
 
-                            <button
+                            <a
                                 onClick={handleRegister}
-                                type="submit"
                                 className="
                                     w-full
                                     py-3
@@ -359,8 +360,9 @@ function Painel() {
                                     hover:scale-[1.02]
                                     active:scale-[0.98]
                                 ">
-                                Criar conta
-                            </button>
+                                {spiner? '...':'Criar conta'}
+                            </a>
+                            {msg}
 
                             {index != -1 && (
                                 <button
