@@ -1,33 +1,35 @@
 import { use, useState } from "react";
 import { Link, useNavigate } from "react-router";
+import {supabase} from '../../utils/supabase';
 
 function Auth() {
 
-    const [email, setEmail] = useState ("");
-    const [senha, setSenha] = useState ("");
-    const [msg, setMsg] = useState ("");
+    const [email, setEmail] = useState("");
+    const [senha, setSenha] = useState("");
+    const [msg, setMsg] = useState("");
 
     const nav = useNavigate()
-    
-    function handleRegister(){
-        const users = JSON.parse(localStorage.getItem('users'))
 
-        let user = users.find(u =>{
-            return u.email ==email
-        })
+    async function handleRegister() {
 
-        if(!user){
+        const {
+            data: loginData, error: loginError
+        } = await supabase.auth.signInWithPassword({
+            email: loginData.email,
+            password: loginData.senha
+        });
+        
+
+        if (!loginData) {
             console.log("Usuário não reconhecido")
             return
         }
 
-        if(user.senha == senha){
-            console.log("Usuário logado")
-            localStorage.setItem("logged", JSON.stringify(user))
-            nav("/painel")
-        }else{
-            console.log("Senha inválida")
-        }
+
+        console.log("Usuário logado")
+        localStorage.setItem("logged", JSON.stringify(loginData))
+        nav("/painel")
+
     }
 
     return (
@@ -51,7 +53,7 @@ function Auth() {
                 py-4 
                 flex">
                     <Link to="/"
-                    className="
+                        className="
                     py-2 
                     px-4 
                     bg-purple-700 
@@ -69,7 +71,7 @@ function Auth() {
                     </Link>
                 </div>
             </nav>
-        
+
             <main className="
             min-h-screen
             flex 
@@ -79,13 +81,13 @@ function Auth() {
             pt-20
             ">
 
-                
-            <div className=" 
+
+                <div className=" 
                 relative 
                 w-full 
                 max-w-md
             ">
-                <div className="
+                    <div className="
                 absolute
                 inset-0
                 z-0 
@@ -94,56 +96,56 @@ function Auth() {
                 blur-3xl 
                 rounded-full
                 "></div>
-                <div className="
+                    <div className="
                 relative
                 z-10 
                 mb-12
                 ">
-                    <div className="
+                        <div className="
                     text-center 
                     mb-8
                     ">
-                        <h1 className="
+                            <h1 className="
                         text-4xl 
                         font-bold
                         ">
-                            Login
-                        </h1>
-                        <p className="
+                                Login
+                            </h1>
+                            <p className="
                         mt-2 
                         text-gray-400
                         ">
-                            Entre na sua conta para continuar
-                        </p>
-                    </div>
-                    <span>
-                        {msg}
-                    </span>
-                    <form id="form_login" 
-                    className="w-full 
+                                Entre na sua conta para continuar
+                            </p>
+                        </div>
+                        <span>
+                            {msg}
+                        </span>
+                        <form id="form_login"
+                            className="w-full 
                     p-8 bg-[#080808] 
                     border 
                     border-purple-900/40 
                     rounded-2xl 
                     shadow-2xl
                     ">
-                        <div className="mb-6">
-                            <label htmlFor="i_emaillogin" 
-                            className="
+                            <div className="mb-6">
+                                <label htmlFor="i_emaillogin"
+                                    className="
                             block 
                             mb-2 
                             text-sm 
                             font-medium 
                             text-gray-200
                             ">
-                                Email
-                            </label>
-                            <input
-                                id="i_emaillogin"
-                                type="email"
-                                value={email}
-                                placeholder="Digite seu email"
-                                className="w-full 
+                                    Email
+                                </label>
+                                <input
+                                    id="i_emaillogin"
+                                    type="email"
+                                    value={email}
+                                    placeholder="Digite seu email"
+                                    className="w-full 
                                 px-4 
                                 py-3 
                                 bg-[#17171c] 
@@ -158,27 +160,27 @@ function Auth() {
                                 focus:ring-2 
                                 focus:ring-purple-600/20 
                                 placeholder:text-gray-500"
-                                onChange={(e) => setEmail(e.target.value)}
-                            />
-                            {email}
-                        </div>
-                        <div className="mb-4">
-                            <label
-                                htmlFor="i_passwordlogin"
-                                className="
+                                    onChange={(e) => setEmail(e.target.value)}
+                                />
+                                {email}
+                            </div>
+                            <div className="mb-4">
+                                <label
+                                    htmlFor="i_passwordlogin"
+                                    className="
                                 block mb-2 
                                 text-sm 
                                 font-medium 
                                 text-gray-200"
-                            >
-                                Senha
-                            </label>
-                            <input
-                                id="i_passwordlogin"
-                                type="password"
-                                value={senha}
-                                placeholder="Digite sua senha"
-                                className="w-full 
+                                >
+                                    Senha
+                                </label>
+                                <input
+                                    id="i_passwordlogin"
+                                    type="password"
+                                    value={senha}
+                                    placeholder="Digite sua senha"
+                                    className="w-full 
                                 px-4 
                                 py-3 
                                 bg-[#17171c] 
@@ -193,14 +195,14 @@ function Auth() {
                                 focus:ring-2 
                                 focus:ring-purple-600/20 
                                 placeholder:text-gray-500"
-                                onChange={(e) => setSenha(e.target.value)}
-                            />
-                            {senha}
-                        </div>
-                        <a
-                            onClick={handleRegister}
-                            type="submit"
-                            className="
+                                    onChange={(e) => setSenha(e.target.value)}
+                                />
+                                {senha}
+                            </div>
+                            <a
+                                onClick={handleRegister}
+                                type="submit"
+                                className="
                             w-full 
                             py-3 rounded-xl 
                             bg-purple-700 text-white 
@@ -210,12 +212,12 @@ function Auth() {
                             hover:shadow-purple-900/40 
                             hover:scale-[1.02] 
                             active:scale-[0.98]"
-                            to="/painel"
-                        >
-                            Login
-                        </a>
-                    </form>
-                </div>
+                                to="/painel"
+                            >
+                                Login
+                            </a>
+                        </form>
+                    </div>
                 </div>
             </main>
         </div>

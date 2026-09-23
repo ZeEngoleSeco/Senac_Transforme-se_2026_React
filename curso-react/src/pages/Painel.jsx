@@ -11,7 +11,7 @@ function Painel() {
     const [isEdit, setIsEdit] =  useState(false);
     const [index, setIndex] = useState(-1);
     const [msg, setMsg] = useState('')
-    const [spiner, useSpiner] = useState(false)
+    const [spiner, setSpiner] = useState(false)
 
     useEffect(
         () => {
@@ -46,7 +46,36 @@ function Painel() {
         });
 
         if(authError){
-            setMsg(authError)
+            //console.log(authError)
+            setMsg(authError.message)
+            setSpiner(false)
+            return;
+        }
+
+        if(!authData){
+            setMsg("Fique esperto")
+            setSpiner(false)
+            return;
+        }
+        
+        const{
+            data: loginData, error: loginError
+        } = await supabase.auth.signInWithPassword({
+            email: user.email,
+            password: user.senha
+        });
+
+        const {error: profileError} = await supabase
+        .from('profiles')
+        .insert({
+            user_id: loginData.user.id,
+            full_name: user.nome,
+            birth: user.nascimento,
+            cpf: user.cpf
+        });
+
+        if(profileError){
+            setMsg(profileError.messsage)
             setSpiner(false)
             return;
         }
@@ -323,6 +352,41 @@ function Painel() {
                                     value={user.nascimento}
                                     onChange={(e) => setUser({ ...user, nascimento: e.target.value })}
                                     type="date"
+                                    className="
+                                        w-full
+                                        px-4
+                                        py-3
+                                        bg-[#17171c]
+                                        border
+                                        border-gray-700
+                                        rounded-xl
+                                        text-white
+                                        outline-none
+                                        transition
+                                        duration-300
+                                        focus:border-purple-600
+                                        focus:ring-2
+                                        focus:ring-purple-600/20
+                                    "/>
+                            </div>
+
+                            <div>
+                                <label
+                                    htmlFor="CPF"
+                                    className="
+                                        block
+                                        mb-2        
+                                        text-sm
+                                        font-medium
+                                        text-gray-200
+                                    ">
+                                    CPF
+                                </label>
+
+                                <input
+                                    value={user.cpf}
+                                    onChange={(e) => setUser({ ...user, cpf: e.target.value })}
+                                    type="text"
                                     className="
                                         w-full
                                         px-4
