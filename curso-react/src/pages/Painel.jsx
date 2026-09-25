@@ -15,11 +15,17 @@ function Painel() {
 
     useEffect(
         () => {
-            const logged = JSON.parse(localStorage.getItem('logged'));
-            setLogged(logged);
-        },
-        []
-    );
+            loadUsers()
+        },[]);
+
+    async function loadUsers(){
+        const {data, error} = await supabase.from('profiles').select('*')
+        if(error){
+            setMsg(error.message)
+            return;
+        }
+        setUsers(data)
+    }
 
     useEffect(
         () => {
@@ -29,20 +35,48 @@ function Painel() {
         []
     )
 
-    function deletUser(index){
-        const newUsers = users.filter((u,i) => {
-            return i != index
-        })
-        setUsers(newUsers);
-        localStorage.setItem('users', JSON.stringify(newUsers));
+    async function editUser(){
+        setSpiner(true)
+        const { data, error } = await supabase
+        .from('profiles')
+        .update(user)
+        .eq('id', index)
+
+        if(error){
+            setMsg(error.message)
+            setSpiner(false)
+            return;
+        }
+
+        setMsg("Usuário editado")
+        setSpiner(false)
+        loadUsers()
     }
+
+   async function deletUser(index){
+        const { error } = await supabase
+        .from('profiles')
+        .delete()
+        .eq('id', index)
+
+        if(error){
+            setMsg(error.message)
+            setSpiner(false)
+            return;
+        }
+        setMsg("Usuário deletado")
+        setSpiner(false)
+        loadUsers()
+    }
+
+        
 
     async function handleRegister(){
         //users.push(user); usuário empurrado nos usuários
         setSpiner(true)
         const {data: authData, error: authError} = await supabase.auth.signUp({
             email: user.email,
-            password: user.senha
+            password: user.password
         });
 
         if(authError){
@@ -62,16 +96,13 @@ function Painel() {
             data: loginData, error: loginError
         } = await supabase.auth.signInWithPassword({
             email: user.email,
-            password: user.senha
+            password: user.password
         });
 
         const {error: profileError} = await supabase
         .from('profiles')
-        .insert({
+        .insert({...user,
             user_id: loginData.user.id,
-            full_name: user.nome,
-            birth: user.nascimento,
-            cpf: user.cpf
         });
 
         if(profileError){
@@ -79,13 +110,16 @@ function Painel() {
             setSpiner(false)
             return;
         }
+
+        setMsg("cadastrado com sucesso")
+        loadUsers()
         setSpiner(false)
     }
 
-    function updateUser(i) {
+    function updateUser(user) {
         setModal(true);
-        setUser(users[i]);
-        setIndex(i);
+        setUser(user);
+        setIndex(user.id);
     }
 
     return (
@@ -135,7 +169,7 @@ function Painel() {
             </nav>
 
             <h3>
-                Bem Vindo, {logged?.nome}
+                Bem Vindo, {logged?.name}
             </h3>
 
             {modal && (
@@ -224,7 +258,7 @@ function Painel() {
 
                             <div>
                                 <label 
-                                    htmlFor="nome"
+                                    htmlFor="name"
                                     className="
                                         block
                                         mb-2
@@ -232,12 +266,12 @@ function Painel() {
                                         font-medium
                                         text-gray-200
                                 ">
-                                    Nome
+                                    nome
                                 </label>
 
                                 <input
-                                    value={user.nome}
-                                    onChange={(e) => setUser({ ...user, nome: e.target.value })}
+                                    value={user.name}
+                                    onChange={(e) => setUser({ ...user, name: e.target.value })}
                                     type="text"
                                     placeholder="Digite seu nome completo"
                                     className="
@@ -272,29 +306,32 @@ function Painel() {
                                     ">
                                     Email
                                 </label>
-
-                                <input
-                                    value={user.email}
-                                    onChange={(e) => setUser({ ...user, email: e.target.value })}
-                                    type="email"
-                                    placeholder="Digite seu melhor email"
-                                    className="
-                                        w-full
-                                        px-4
-                                        py-3
-                                        bg-[#17171c]
-                                        border
-                                        border-gray-700
-                                        rounded-xl
-                                        text-white
-                                        outline-none
-                                        placeholder:text-gray-500
-                                        transition
-                                        duration-300
-                                        focus:border-purple-600
-                                        focus:ring-2
-                                        focus:ring-purple-600/20
+                                
+                                {index == -1 && (
+                                    <input
+                                        value={user.email}
+                                        onChange={(e) => setUser({ ...user, email: e.target.value })}
+                                        type="email"
+                                        placeholder="Digite seu melhor email"
+                                        className="
+                                            w-full
+                                            px-4
+                                            py-3
+                                            bg-[#17171c]
+                                            border
+                                            border-gray-700
+                                            rounded-xl
+                                            text-white
+                                            outline-none
+                                            placeholder:text-gray-500
+                                            transition
+                                            duration-300
+                                            focus:border-purple-600
+                                            focus:ring-2
+                                            focus:ring-purple-600/20
                                     "/>
+                                )}
+                                
                             </div>
 
 
@@ -311,27 +348,29 @@ function Painel() {
                                     Senha
                                 </label>
 
-                                <input
-                                    onChange={(e) => setUser({ ...user, senha: e.target.value })}
-                                    type="password"
-                                    placeholder="Letra maiúscula e um número"
-                                    className="
-                                        w-full
-                                        px-4
-                                        py-3
-                                        bg-[#17171c]
-                                        border
-                                        border-gray-700
-                                        rounded-xl
-                                        text-white
-                                        outline-none
-                                        placeholder:text-gray-500
-                                        transition
-                                        duration-300
-                                        focus:border-purple-600
-                                        focus:ring-2
-                                        focus:ring-purple-600/20
-                                    "/>
+                                {index == -1 && (
+                                    <input
+                                        onChange={(e) => setUser({ ...user, password: e.target.value })}
+                                        type="password"
+                                        placeholder="Letra maiúscula e um número"
+                                        className="
+                                            w-full
+                                            px-4
+                                            py-3
+                                            bg-[#17171c]
+                                            border
+                                            border-gray-700
+                                            rounded-xl
+                                            text-white
+                                            outline-none
+                                            placeholder:text-gray-500
+                                            transition
+                                            duration-300
+                                            focus:border-purple-600
+                                            focus:ring-2
+                                            focus:ring-purple-600/20
+                                        "/>
+                                )}
                             </div>
 
 
@@ -407,7 +446,14 @@ function Painel() {
 
 
                             <a
-                                onClick={handleRegister}
+                                onClick={
+                                    ()=> {
+                                        if(index == -1)
+                                            handleRegister()
+                                        else
+                                            editUser()
+                                    }
+                                }
                                 className="
                                     w-full
                                     py-3
@@ -453,9 +499,8 @@ function Painel() {
 
                         </form>):(
                             <>
-                                <p className="text-white"><b>Nome:</b> {user.nome}</p>
-                                <p className="text-white"><b>Email:</b> {user.email}</p>
-                                <p className="text-white"><b>Nascimento:</b> {user.nascimento}</p>
+                                <p className="text-white"><b>name:</b> {user.name}</p>
+                                <p className="text-white"><b>CPF:</b> {user.cpf}</p>
                                 <button 
                                     onClick={() => setIsEdit(true)}
                                     className="
@@ -487,18 +532,22 @@ function Painel() {
             <h2 className="py-2 px-4 mt-5"></h2>
             <table className="py-2 px-4 mt-5">
                 <thead>
-                    <th className="text-white">Nome</th>
-                    <th className="text-white">Email</th>
+                    <th className="text-white">name</th>
                     <th className="text-white">Ações</th>
                 </thead>
                 <tbody className="font-secondary">
                     {users.map( (u,i) => (
-                            <tr>
-                                <td>{u.nome}</td>
-                                <td>{u.email}</td>
+                            <tr key={u.id}>
+                                <td>{u.name}</td>
+                                <td>{u.cpf}</td>
                                 <td>
                                     <a 
-                                        onClick={()=> deletUser(i)}
+                                        onClick={()=> {
+                                        if(index == -1)
+                                            handleRegister()
+                                        else
+                                            deletUser()
+                                    }}
                                         className="
                                             cursor-pointer
                                             rounded-full
@@ -529,7 +578,7 @@ function Painel() {
                                             shadow
                                             mx-4
                                         "
-                                        onClick={()=> updateUser(i)}
+                                        onClick={()=> updateUser(u)}
                                     >
                                         V
                                     </a>
@@ -542,6 +591,7 @@ function Painel() {
                 onClick={() => {
                     setModal(true)
                     setIsEdit(true)
+                    setMsg('')
                 }}
                 class="
                     rounded-full 

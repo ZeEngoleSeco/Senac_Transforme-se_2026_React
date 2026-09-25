@@ -11,6 +11,7 @@ function Auth() {
     const nav = useNavigate()
 
     async function handleRegister() {
+        
 
         const {
             data: loginData, error: loginError
